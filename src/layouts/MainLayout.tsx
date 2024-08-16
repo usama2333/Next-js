@@ -73,6 +73,7 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
           <Button
             key={person}
             onClick={() => handleButtonClick(person)}
+            selected={selectedPerson === person}  // Pass the selected prop
             disabled={loading && selectedPerson !== person}
           >
             {person}
