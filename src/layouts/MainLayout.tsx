@@ -1,3 +1,4 @@
+// components/MainLayout.tsx
 import { FunctionComponent, PropsWithChildren, useState } from "react";
 import { Inter } from "next/font/google";
 import classNames from "classnames";
@@ -5,6 +6,7 @@ import { Button } from "@/components/Button";
 import { Person } from "@/utils/common/person";
 import Skeleton from "@/components/Skeleton"; // Adjust import path if necessary
 import { ProfileCard } from "@/components/ProfileCard";
+import useCurrentTime from '@/hooks/useCurrentTime';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +17,8 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [personData, setPersonData] = useState<any>(null);
+
+  const currentTime = useCurrentTime(); // Get current time
 
   const handleButtonClick = async (person: Person) => {
     console.log(`Button clicked: ${person}`);
@@ -48,6 +52,12 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
         "flex flex-col justify-center items-center"
       )}
     >
+      {/* Display Current Time */}
+      <div className={classNames("mb-4", "text-lg font-medium")}>
+        Current Time: {currentTime}
+      </div>
+
+      {/* Buttons */}
       <div className={classNames("flex gap-2")}>
         {Object.values(Person).map((person) => (
           <Button
@@ -60,11 +70,12 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
         ))}
       </div>
 
+      {/* Other content */}
       <div className={classNames("mt-4")}>
         {loading && <Skeleton />}
         {error && <p className="text-red-500">{error}</p>}
         {personData && (
-          <ProfileCard name={personData.name} details={personData.details} />
+          <ProfileCard name={personData.name} title={personData.details} />
         )}
       </div>
     </main>
