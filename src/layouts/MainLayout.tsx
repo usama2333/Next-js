@@ -7,8 +7,7 @@ import { Person } from "@/utils/common/person";
 import Skeleton from "@/components/Skeleton";
 import { ProfileCard } from "@/components/ProfileCard";
 import useCurrentTime from '@/hooks/useCurrentTime';
-import useLogPersonDetails from '@/hooks/useLogPersonDetails';
-import { useLogContext } from '@/context/LogContext';
+import useLogPersonDetails from '@/hooks/useLogPersonDetails'; // Import the custom hook
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,25 +18,15 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [personData, setPersonData] = useState<any>(null);
-  const [currentTime, setCurrentTime] = useState<string>(''); // State for current time
+  const [isMounted, setIsMounted] = useState<boolean>(false); // State to check if component is mounted
 
-  const { enableLogs } = useLogContext(); // Get enableLogs from context
+  const currentTime = useCurrentTime(); // Get current time
 
-  // Update the current time every second
+  useLogPersonDetails(personData, currentTime); // Use the custom hook
+
   useEffect(() => {
-    const updateCurrentTime = () => {
-      const now = new Date();
-      setCurrentTime(now.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'medium' }));
-    };
-
-    updateCurrentTime(); // Initial call
-    const intervalId = setInterval(updateCurrentTime, 1000); // Update every second
-
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    setIsMounted(true); // Set mounted to true after the component mounts
   }, []);
-
-  // Use the custom hook to log details and current time
-  useLogPersonDetails(personData, currentTime);
 
   const handleButtonClick = async (person: Person) => {
     console.log(`Button clicked: ${person}`);
@@ -71,10 +60,12 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
         "flex flex-col justify-center items-center"
       )}
     >
-      {/* Display Current Time */}
-      <div className={classNames("mb-4", "text-lg font-medium")}>
-        Current Time: {currentTime}
-      </div>
+      {/* Display Current Time only after mount */}
+      {isMounted && (
+        <div className={classNames("mb-4", "text-lg font-medium")}>
+          Current Time: {currentTime}
+        </div>
+      )}
 
       {/* Buttons */}
       <div className={classNames("flex gap-2")}>

@@ -1,5 +1,5 @@
 // context/LogContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode } from "react";
 
 interface LogContextType {
   enableLogs: boolean;
@@ -9,7 +9,7 @@ interface LogContextType {
 const LogContext = createContext<LogContextType | undefined>(undefined);
 
 export const LogProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [enableLogs, setEnableLogs] = useState<boolean>(false);
+  const [enableLogs, setEnableLogs] = useState<boolean>(true);
 
   const toggleLogs = () => setEnableLogs(prev => !prev);
 
@@ -22,8 +22,8 @@ export const LogProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
 export const useLogContext = () => {
   const context = useContext(LogContext);
-  if (!context) {
-    throw new Error('useLogContext must be used within a LogProvider');
+  if (context === undefined) {
+    throw new Error("useLogContext must be used within a LogProvider");
   }
   return context;
 };
