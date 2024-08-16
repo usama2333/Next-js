@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import classNames from "classnames";
 import { Button } from "@/components/Button";
 import { Person } from "@/utils/common/person";
+import Skeleton from "@/components/Skeleton"; // Adjust import path if necessary
+import { ProfileCard } from "@/components/ProfileCard";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -52,7 +54,6 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
             key={person}
             onClick={() => handleButtonClick(person)}
             disabled={loading && selectedPerson !== person}
-            selected={selectedPerson === person}
           >
             {person}
           </Button>
@@ -60,13 +61,10 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
       </div>
 
       <div className={classNames("mt-4")}>
-        {loading && <p>Loading...</p>}
+        {loading && <Skeleton />}
         {error && <p className="text-red-500">{error}</p>}
         {personData && (
-          <div>
-            <h2>{personData.name}</h2>
-            <p>{personData.details}</p>
-          </div>
+          <ProfileCard name={personData.name} details={personData.details} />
         )}
       </div>
     </main>
