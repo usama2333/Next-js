@@ -1,22 +1,17 @@
 // context/LogContext.tsx
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-// Define the shape of the context state
-interface LogContextProps {
+interface LogContextType {
   enableLogs: boolean;
   toggleLogs: () => void;
 }
 
-// Create the context with default values
-const LogContext = createContext<LogContextProps | undefined>(undefined);
+const LogContext = createContext<LogContextType | undefined>(undefined);
 
-// Create a provider component
 export const LogProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [enableLogs, setEnableLogs] = useState<boolean>(false);
 
-  const toggleLogs = () => {
-    setEnableLogs(prev => !prev);
-  };
+  const toggleLogs = () => setEnableLogs(prev => !prev);
 
   return (
     <LogContext.Provider value={{ enableLogs, toggleLogs }}>
@@ -25,10 +20,9 @@ export const LogProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   );
 };
 
-// Custom hook to use the LogContext
 export const useLogContext = () => {
   const context = useContext(LogContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useLogContext must be used within a LogProvider');
   }
   return context;

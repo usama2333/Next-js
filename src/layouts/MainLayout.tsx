@@ -1,12 +1,14 @@
 // components/MainLayout.tsx
-import { FunctionComponent, PropsWithChildren, useState } from "react";
+import { FunctionComponent, PropsWithChildren, useState, useEffect } from "react";
 import { Inter } from "next/font/google";
 import classNames from "classnames";
 import { Button } from "@/components/Button";
 import { Person } from "@/utils/common/person";
-import Skeleton from "@/components/Skeleton"; // Adjust import path if necessary
+import Skeleton from "@/components/Skeleton";
 import { ProfileCard } from "@/components/ProfileCard";
 import useCurrentTime from '@/hooks/useCurrentTime';
+import useLogPersonDetails from '@/hooks/useLogPersonDetails';
+import { useLogContext } from '@/context/LogContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,8 +19,25 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [personData, setPersonData] = useState<any>(null);
+  const [currentTime, setCurrentTime] = useState<string>(''); // State for current time
 
-  const currentTime = useCurrentTime(); // Get current time
+  const { enableLogs } = useLogContext(); // Get enableLogs from context
+
+  // Update the current time every second
+  useEffect(() => {
+    const updateCurrentTime = () => {
+      const now = new Date();
+      setCurrentTime(now.toLocaleString('en-GB', { dateStyle: 'short', timeStyle: 'medium' }));
+    };
+
+    updateCurrentTime(); // Initial call
+    const intervalId = setInterval(updateCurrentTime, 1000); // Update every second
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, []);
+
+  // Use the custom hook to log details and current time
+  useLogPersonDetails(personData, currentTime);
 
   const handleButtonClick = async (person: Person) => {
     console.log(`Button clicked: ${person}`);
