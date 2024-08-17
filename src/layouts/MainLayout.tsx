@@ -73,7 +73,6 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
           <Button
             key={person}
             onClick={() => handleButtonClick(person)}
-            selected={selectedPerson === person}  // Pass the selected prop
             disabled={loading && selectedPerson !== person}
           >
             {person}
@@ -86,7 +85,14 @@ export const MainLayout: FunctionComponent<PropsWithChildren<MainLayoutProps>> =
         {loading && <Skeleton />}
         {error && <p className="text-red-500">{error}</p>}
         {personData && (
-          <ProfileCard name={personData.name} title={personData.details} />
+          <ProfileCard 
+            name={personData.name} 
+            title={personData.title}
+            profilePictureUrl={personData.profilePictureUrl}
+            backgroundImageUrl={personData.backgroundImageUrl}
+            followers={personData.followers}
+            following={personData.following}
+          />
         )}
       </div>
     </main>
