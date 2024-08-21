@@ -1,22 +1,22 @@
 import { PrismaClient } from "@prisma/client";
-import { mockUsers } from "@/utils/server/mock-users";
-import { Person, User } from "@/utils/common/person";
+import { mockUsers } from "../src/utils/server/mock-users"; // Adjust the path as needed
+import { Person } from "../src/utils/common/person";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // TODO: Add mock users
-  // await prisma.user.create({
-  //   data: mockUsers[Person.PersonA] as unknown as User,
-  // });
-  // await prisma.user.create({
-  //   data: mockUsers[Person.PersonB] as unknown as User,
-  // });
+  await prisma.user.create({
+    data: mockUsers[Person.PersonA] as any,
+  });
+  await prisma.user.create({
+    data: mockUsers[Person.PersonB] as any,
+  });
 }
 
 main()
   .catch((e) => {
-    throw e;
+    console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
